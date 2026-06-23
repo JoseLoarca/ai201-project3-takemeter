@@ -81,8 +81,7 @@ it feels too reactive to be an opinion.
 I believe [r/unpopularopinion](https://www.reddit.com/r/unpopularopinion/top/?screen_view_count=2&t=year) is a good
 community for a classification as it contains a wide variety of discussions. The main idea of their community is for
 people to share unpopular opinions. This alone is enough to generate different reactions from people. Different
-reactions
-equals to interesting and varied comments. Some choose to reply with only a simple reaction, others share their opinion,
+reactions equals to interesting and varied comments. Some choose to reply with only a simple reaction, others share their opinion,
 and others like to offer a strong counterargument.
 
 #### Hard edge cases
@@ -229,12 +228,12 @@ Per-class metrics (baseline):
 
 |              | precision | recall | f1-score | support |
 |--------------|:---------:|:------:|:--------:|:-------:|
-| opinion      |   0.75    |  0.90  |   0.82   |   10    |
-| argument     |   1.00    |  0.80  |   0.89   |   10    |
+| opinion      |   0.73    |  0.80  |   0.76   |   10    |
+| argument     |   1.00    |  0.90  |   0.95   |   10    |
 | reaction     |   0.73    |  0.73  |   0.73   |   11    |
 |              |           |        |          |         |
 | accuracy     |           |        |   0.81   |   31    |
-| macro avg    |   0.83    |  0.81  |   0.81   |   31    |
+| macro avg    |   0.82    |  0.81  |   0.81   |   31    |
 | weighted avg |   0.82    |  0.81  |   0.81   |   31    |
 
 ### Reflection
@@ -248,8 +247,19 @@ view on something. Hypothesis: reactions are harder to identify without context.
 
 ### Wrong Predictions
 
-Text: "Bike commuting and walking are peaceful and I love getting to be outside and about during those times. Driving, however, is hell."
+Text: "A relationship won't last without love."
 
+>True: **opinion**
+> 
+>Predicted: **reaction** (confidence: 0.34)
+
+*Analysis:* this, to me, is a clear example of an opinion. The user is sharing their view on relationships without love.
+I don't really have a theory on why the model guessed reaction, based on the low confidence score, I assume the model
+simply guessed.
+
+---
+
+Text: "Bike commuting and walking are peaceful and I love getting to be outside and about during those times. Driving, however, is hell."
 >True: **opinion**
 > 
 >Predicted: **argument** (confidence: 0.36)
@@ -260,32 +270,22 @@ My hypothesis is that the simple comparison ("Driving, however, is hell") was se
 
 ---
 
-Text: "Couldn't agree more!"
+Text: "I love posts like this because it shows how many people out there are absolutely butthurt about the stupidest stuff"
 >True: **reaction**
 > 
->Predicted: **opinion** (confidence: 0.35)
+>Predicted: **opinion** (confidence: 0.37)
 
-*Analysis:* this is another example that to me is clear: this is a reaction. The user is agreeing with a post / comment.
-My hypothesis is that since there is no context, the model sees this as a simple affirmative statement. 
-
----
-
-Text: "Wired earphones are superior to wireless headphones. You can't lose one earbud without ripping it off, if they fall you can always grab the wire, they don't run out of battery, you can put the cord in..."
->True: **argument**
-> 
->Predicted: **opinion** (confidence: 0.36)
-
-*Analysis:* yet another case that is clear to me: this is an argument. The user is expressing their view on something 
-WITH justification / reasoning, even if its personal or subjective. My hypothesis is that since the post starts with 
-a clear opinion (x is better than y), when the model found ambiguity, it defaulted to opinion.
+*Analysis:* this can be considered an ambiguous case. Yes, "I love posts like this" is a reaction from the user, but they
+also added more text which can be seen as an opinion on people. My hypothesis is that the model simply ran into an 
+ambiguous case, and defaulted to **opinion**.
 
 ---
 ### Evaluation Results
 ```json
 {
   "baseline_accuracy": 0.8065,
-  "finetuned_accuracy": 0.4516,
-  "improvement": -0.3548,
+  "finetuned_accuracy": 0.7097,
+  "improvement": -0.0968,
   "test_set_size": 31,
   "label_map": {
     "opinion": 0,
@@ -300,9 +300,9 @@ a clear opinion (x is better than y), when the model found ambiguity, it default
 
 | True Label | Predicted Opinion | Predicted Argument | Predicted Reaction |  Total |
 |------------|------------------:|-------------------:|-------------------:|-------:|
-| Opinion    |                 6 |                  4 |                  0 |     10 |
-| Argument   |                 2 |                  8 |                  0 |     10 |
-| Reaction   |                11 |                  0 |                  0 |     11 |
-| **Total**  |            **19** |             **12** |              **0** | **31** |
+| Opinion    |                 4 |                  5 |                  1 |     10 |
+| Argument   |                 0 |                 10 |                  0 |     10 |
+| Reaction   |                 3 |                  0 |                  8 |     11 |
+| **Total**  |             **7** |             **15** |              **9** | **31** |
 The table above is based on the image below:
 <img src="/data/confusion_matrix.png"/>
