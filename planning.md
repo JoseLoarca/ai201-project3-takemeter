@@ -134,14 +134,17 @@ These are the labels I used for each post:
   5. **Reaction**
 
 #### Annotation assistance
-- *What I will give the AI:*<br>I will give Claude (Sonnet 4.6) 20 examples per label, this is around 30% of the records
-I plan to have per label, and ask it to label them.
+- *What I will give the AI:*<br>I will give Claude (Sonnet 4.6) a set of unlabeled raw examples and ask it to label them
+based on the label descriptions and examples found in planning.md. 
 
 - *What I expect it to produce:*<br>A batch of accurately labeled examples.
 
 - *What will I do with the output:*<br>I will review the examples myself, and then I will keep track of them by
-adding a column in my examples dataset that identifies them as labeled using Claude. This column will be ignored
-when running the classification task to avoid any issues.
+adding a column in my examples dataset that identifies them as labeled using Claude. 
+This is an interesting experiment. Since I am the one who is collecting the example, I somehow have control over the
+content I choose to include. So when gathering the first 60 examples that will be labeled using AI, I will have a rough 
+idea of how many examples per label I am gathering. This means that by the end, if the AI chooses a different label, 
+I might have to adjust the definition of my labels.
 
 #### Failure analysis
 - *What I will give the AI:*<br>I will give Claude (Sonnet 4.6) a list of wrong predictions and ask it to identify
@@ -152,3 +155,21 @@ analysis detects that a specific label is being confused, lets say arguments are
 analyze the mistakes and look for ambiguous comments. Maybe the error happens when a comment starts with a simple reaction
 and the AI instantly labels it without reading the rest of the comment.
 ---
+
+## Milestone 3: Collect and Annotate Your Dataset
+This was a painful process, I think I will quit Reddit after this. I was able to gather exactly 201 comments or posts 
+from r/unpopularopinion. I have a balanced dataset: exactly 67 examples per label.
+
+There were several cases that felt ambiguous, most of the time they were cases that could be either opinion or argument,
+here are 3 examples of ambiguous cases:
+
+1. > "Yellow is one of the best colors for a car. Yellow is such an underappreciated and underutilized color. Think about it. Yellow is a very visible color, it's associated with happiness. A nice, pale yellow looks awesome on a classic car and the bumblebee yellow looks awesome on a more modern sports car. I'm not trying to drive the typical cherry red sports car, or the cliche sleek black suburban. Nah, give me a yellow car over any other color any day."
+   * This is a comment that feels personal and subjective, but it still provides reasoning to justify a conclusion. 
+   Therefore, I went with `argument` instead of `opinion`.
+
+2. > "I like when the tables are sticky at restaurants. The sticky feeling of tables in general is very soothing to me, mainly in restaurants. It gives me the feeling that someone had such a good time before me, that they spilled their drink laughing. That's how I look at it."
+   * This is another case of a comment that feels personal and subjective, but it still provides reasoning to justify a
+   conclusion. Therefore, I went with `argument` instead of `opinion`.
+
+3. > "You very well could be heat-sensitive. I am. 75 degrees is too hot to me, let alone 90. I prefer the upper 30s."
+    * Ambiguous opinion/reaction. Chose opinion bc at the end they were just expressing what feels hot for them.
