@@ -243,3 +243,66 @@ label when uncertain.
 
 This could because without context, a comment that says "this made me irrationally angry" can be seen as someone's
 view on something. Hypothesis: reactions are harder to identify without context.
+---
+## Milestone 5: Fine-Tune Your Model
+
+### Wrong Predictions
+
+Text: "Bike commuting and walking are peaceful and I love getting to be outside and about during those times. Driving, however, is hell."
+
+>True: **opinion**
+> 
+>Predicted: **argument** (confidence: 0.36)
+
+*Analysis:* this, to me, is a clear example of an opinion. The user is sharing their view on bike commuting, walking, 
+and driving. However, since the user is comparing driving to bike / walking, this could be seen as an argument.
+My hypothesis is that the simple comparison ("Driving, however, is hell") was seen by the model as reasoning.
+
+---
+
+Text: "Couldn't agree more!"
+>True: **reaction**
+> 
+>Predicted: **opinion** (confidence: 0.35)
+
+*Analysis:* this is another example that to me is clear: this is a reaction. The user is agreeing with a post / comment.
+My hypothesis is that since there is no context, the model sees this as a simple affirmative statement. 
+
+---
+
+Text: "Wired earphones are superior to wireless headphones. You can't lose one earbud without ripping it off, if they fall you can always grab the wire, they don't run out of battery, you can put the cord in..."
+>True: **argument**
+> 
+>Predicted: **opinion** (confidence: 0.36)
+
+*Analysis:* yet another case that is clear to me: this is an argument. The user is expressing their view on something 
+WITH justification / reasoning, even if its personal or subjective. My hypothesis is that since the post starts with 
+a clear opinion (x is better than y), when the model found ambiguity, it defaulted to opinion.
+
+---
+### Evaluation Results
+```json
+{
+  "baseline_accuracy": 0.8065,
+  "finetuned_accuracy": 0.4516,
+  "improvement": -0.3548,
+  "test_set_size": 31,
+  "label_map": {
+    "opinion": 0,
+    "argument": 1,
+    "reaction": 2
+  },
+  "model": "distilbert-base-uncased"
+}
+```
+
+### Confusion Matrix
+
+| True Label | Predicted Opinion | Predicted Argument | Predicted Reaction |  Total |
+|------------|------------------:|-------------------:|-------------------:|-------:|
+| Opinion    |                 6 |                  4 |                  0 |     10 |
+| Argument   |                 2 |                  8 |                  0 |     10 |
+| Reaction   |                11 |                  0 |                  0 |     11 |
+| **Total**  |            **19** |             **12** |              **0** | **31** |
+The table above is based on the image below:
+<img src="/data/confusion_matrix.png"/>
